@@ -6,27 +6,56 @@ app.geometry("1000x600")
 
 
 frame_entradas = tk.Frame(app)
-frame_entradas.pack(expand=True) # expand=True ajuda a centralizar no meio da tela
+frame_entradas.pack(expand=True) #expand=True ajuda a centralizar no meio da tela
 
-# 2. Colocamos as entradas dentro do FRAME (não no app)
-num1 = tk.Entry(frame_entradas, width=10)
-num1.grid(row=1, column=0, padx=5) # Coluna 0 (esquerda)
+frame_equacoes = tk.Frame(app)
 
-num2 = tk.Entry(frame_entradas, width=10)
-num2.grid(row=1, column=1, padx=5) # Coluna 1 (direita)
 
-texto = tk.Label(frame_entradas, text="Qtd. de equações")
-texto.grid(row=0, column=0, padx=5) 
+def acao_do_botao():
+    frame_entradas.pack_forget()
+    frame_equacoes.pack(expand=True)
 
-texto = tk.Label(frame_entradas, text="Qtd. de variáveis")
-texto.grid(row=0, column=1, padx=5) 
+    #cria entradas da equacao
+    sistema = []
+    nEquacoes = int(qtdEquacoes.get())
+    nVariaveis = int(qtdVariaveis.get())
+    for i in range(nEquacoes):
+        equacao = []
+        for j in range(nVariaveis):
+            entrada = tk.Entry(frame_equacoes, width=8)
+            entrada.grid(row = i, column = j, padx=5, pady=5)
+            equacao.append(entrada)
+        sistema.append(equacao)
 
-botao = tk.Button(frame_entradas, width = 10, text="->")
+#entradas das variaveis
+qtdEquacoes = tk.Entry(frame_entradas, width=10)
+qtdEquacoes.grid(row=1, column=0, padx=5) 
+
+qtdVariaveis = tk.Entry(frame_entradas, width=10)
+qtdVariaveis.grid(row=1, column=1, padx=5)
+
+texto1 = tk.Label(frame_entradas, text="Qtd. de equações")
+texto1.grid(row=0, column=0, padx=5) 
+
+texto2 = tk.Label(frame_entradas, text="Qtd. de variáveis")
+texto2.grid(row=0, column=1, padx=5) 
+
+botao = tk.Button(frame_entradas, width = 10, text="->", command = acao_do_botao)
 botao.grid(row = 2, column = 0,pady=20,columnspan=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.mainloop()
-
-
-
 
 '''
 def isInteger(num):
