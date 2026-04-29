@@ -11,6 +11,7 @@ frame_entradas = tk.Frame(app)
 frame_entradas.pack(expand=True) #expand=True ajuda a centralizar no meio da tela
 
 frame_equacoes = tk.Frame(app)
+frame_resultados = tk.Frame(app)
 
 
 sistema = []
@@ -20,28 +21,36 @@ def acao_do_botao():
 
     #cria entradas da equacao
     nEquacoes = int(qtdEquacoes.get())
-    nVariaveis = int(qtdVariaveis.get())
+    nVariaveis = int(qtdVariaveis.get()) 
     for i in range(nEquacoes):
         equacao = []
         for j in range(nVariaveis):
             
-            #imprimir o '='
-            if j == nVariaveis - 1:
-                igual = tk.Label(frame_equacoes, text="=")
-                igual.grid(row=i, column=j, padx=5) 
-            
-                entrada = tk.Entry(frame_equacoes, width=8)
-                entrada.grid(row = i, column = j+1, padx=5, pady=5)
+           
+            entrada = tk.Entry(frame_equacoes, width=5)
+            entrada.grid(row=i, column=2*j, padx=2, pady=5)
 
-            else:
-                entrada = tk.Entry(frame_equacoes, width=8)
-                entrada.grid(row = i, column = j, padx=5, pady=5)
+            
+            simbolo = tk.Label(frame_equacoes, text=f"x{j+1}")
+            simbolo.grid(row=i, column=2*j + 1, padx=2, pady=5)
+
             equacao.append(entrada)
+        #coloca o '='
+        igual = tk.Label(frame_equacoes, text="=")
+        igual.grid(row=i, column=2*nVariaveis, padx=5)
+
+        #resultado (b)
+        entrada_resultado = tk.Entry(frame_equacoes, width=5)
+        entrada_resultado.grid(row=i, column=2*nVariaveis + 1, padx=5, pady=5)
+        equacao.append(entrada_resultado)
+
         sistema.append(equacao)
 
         #botao para escalonar
-        btnContinuar = tk.Button(frame_equacoes, width=10, text="Escalonar", command = calcular_sistema)
-        btnContinuar.grid(row=nEquacoes, column=0, columnspan=nVariaveis+1, pady=20)
+        btn_continuar = tk.Button(frame_equacoes, width=10, text="Escalonar", command = calcular_sistema)
+        btn_continuar.grid(row=nEquacoes, column=0, columnspan=2*nVariaveis+2, pady=20)
+
+      
 
 
 def calcular_sistema():
@@ -63,14 +72,43 @@ def calcular_sistema():
         valores_numericos.append(valores_da_linha)
     
     print("Sua matriz de números:", valores_numericos)
+    escalonar(valores_numericos)
 
-#escalonando
+
 def escalonar(sistema):
-    for i, linha in enumerate(sistema):
-        for j, entrada in enumerate(linha):
-            pass
+    linha = len(sistema)
+    coluna = len(sistema[0]) -1
+    #achando o pivo
+    for i in range(min(linha,coluna)):
+        maior_linha = i
+
+        for j in range(i+1, linha):
+            if( abs(sistema[j][i]) > abs(sistema[maior_linha][i])):
+                maior_linha = j
+
+        #troca linha
+        sistema[i], sistema[maior_linha] = sistema[maior_linha], sistema[i]
+        
+        if sistema[i][i] == 0:
+            continue
+
+        for j in range(i +1, linha):
+            fator = sistema[j][i] / sistema[i][i]
+            for k in range(i, len(sistema[0])):
+                sistema[j][k] -= fator * sistema[i][k]
+    print(f'escalonada: {sistema}')
+
+    #mostra resultados
+    frame_equacoes.pack_forget()
+    frame_resultados.pack(expand=True)
+
+    for n in range(linha):
+            
+        resultado = tk.Label(frame_resultados, text= sistema[n])
+        resultado.grid(row=n, column=0, padx=5) 
 
 
+    
 #pagina 1
 #entradas das variaveis
 qtdEquacoes = tk.Entry(frame_entradas, width=10)
@@ -90,47 +128,6 @@ btnContinuar.grid(row = 2, column = 0,pady=20,columnspan=2)
 
 
 
-#pagina 2
-
-
-
-
-
-
-
-
 
 app.mainloop()
 
-'''
-def isInteger(num):
-    if num.is_integer():
-        return str(int(num))
-    return str(num)
-
-numEq = int(input("Digite a quantidade de equações: "))
-numVar = int(input("Digite a quantidade de variáveis: "))
-
-represSistema = ''
-sistema = []
-equacao = []
-for i in range(numEq):
-    print(f"Equação {i+1}:")
-    for j in range(numVar):
-        valor = float(input(f"Digite o valor da variável {j+1}: "))
-        equacao.append(valor)
-
-        indice = i * numVar + j
-
-        if valor >= 0:
-            represSistema += " + " + isInteger(valor) + "x" + str(j+1)
-        else:
-            represSistema += " - " + isInteger(abs(valor)) + "x" + str(j+1)
-    sistema.append(equacao)
-    represSistema += '\n'
-
-
-
-print(represSistema)
-print(sistema)
-'''
